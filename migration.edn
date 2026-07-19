@@ -1,0 +1,1 @@
+{:schema "etzhayyim.migration/v1" :source {:repository "etzhayyim/root" :revision "d1ff44f4946bd8e50808dd3fd06b7beeefb8d5c8" :path "60-apps/etzhayyim-project-gameya" :tree "34b583bcda0a92dad6ee73c5a8c251cc9e260855" :tracked-files 22 :bytes 179889} :destination {:repository "etzhayyim/com-etzhayyim-app-gameya"} :identity {:allowed-additions ["README.edn" "migration.edn"]}}

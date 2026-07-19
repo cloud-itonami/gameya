@@ -1,0 +1,15 @@
+{
+  "@context": "https://schema.org",
+  "@type": "VideoGame",
+  "@id": "https://gameya.etzhayyim.com",
+  "name": "gameya.etzhayyim.com",
+  "description": "A polished browser arcade game and LangGraph-driven quality loop for Etzhayyim game iteration.",
+  "url": "https://gameya.etzhayyim.com",
+  "applicationCategory": "Game",
+  "operatingSystem": "Web",
+  "author": {
+    "@type": "Organization",
+    "name": "etzhayyim",
+    "url": "https://etzhayyim.com"
+  }
+}

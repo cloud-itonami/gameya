@@ -1,0 +1,28 @@
+{
+  "ok": true,
+  "url": "https://gameya.etzhayyim.com",
+  "desktop": {
+    "score": 360,
+    "clearedMode": "stageclear",
+    "stageTwo": 2,
+    "hazards": 1,
+    "pausedMode": "paused",
+    "resumedX": 242,
+    "screenshot": "/Users/junkawasaki/github/etzhayyim-root/60-apps/etzhayyim-project-gameya/appview/gameya-play-canvas/output/gameya-quality/desktop.png"
+  },
+  "mobile": {
+    "x": 339,
+    "y": 283,
+    "screenshot": "/Users/junkawasaki/github/etzhayyim-root/60-apps/etzhayyim-project-gameya/appview/gameya-play-canvas/output/gameya-quality/mobile.png"
+  },
+  "allClear": {
+    "finalMode": "clear",
+    "finalStage": 3,
+    "finalScore": 1240,
+    "screenshot": "/Users/junkawasaki/github/etzhayyim-root/60-apps/etzhayyim-project-gameya/appview/gameya-play-canvas/output/gameya-quality/all-clear.png"
+  },
+  "xrpc": {
+    "assistant_id": "gameya_quality_loop",
+    "target_quality": "nintendo-quality"
+  }
+}
