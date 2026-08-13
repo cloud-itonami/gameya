@@ -1,0 +1,11 @@
+# Install and build output produced by docs/operator-quickstart.md.
+# The repo had no .gitignore, so following the quickstart left ~200 MB of
+# node_modules staged for anyone who ran `git add -A`.
+#
+# svelte/package-lock.json is deliberately NOT listed: that directory has no
+# committed lockfile, which is a real gap, and hiding it here would make the
+# gap invisible instead of fixing it.
+
+node_modules/
+.svelte-kit/
+.wrangler/
