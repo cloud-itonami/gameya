@@ -8,8 +8,9 @@
 ;;
 ;; It does not carry a hardcoded host list — it extracts the hosts from the
 ;; files that declare them (wrangler.jsonc, PROJECT.jsonld, the game Worker
-;; entrypoint, the SvelteKit BFF route, and the stale committed run summary),
-;; so adding a host to the config brings it under the check automatically.
+;; entrypoint, the preserved-but-unwired former SvelteKit BFF route, and the
+;; stale committed run summary), so adding a host to the config brings it
+;; under the check automatically.
 ;;
 ;; Third copy of a script that originated in cloud-itonami/game-play-uploader
 ;; and reached this repo via cloud-itonami/games. It is generic — it reads the
