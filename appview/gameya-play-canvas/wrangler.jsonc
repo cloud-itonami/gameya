@@ -1,6 +1,5 @@
 {
   "name": "kotodama-g4m3ya00",
-  "main": "svelte/.svelte-kit/cloudflare/_worker.js",
   "compatibility_date": "2025-03-17",
   "compatibility_flags": [
     "nodejs_compat",
@@ -10,7 +9,7 @@
     "APP_CAPABILITIES": "[\"play\",\"quality-loop\",\"canvas-game\",\"agentic-playtest\"]",
     "APP_DESCRIPTION": "gameya.etzhayyim.com playable browser game with LangGraph quality loop.",
     "APP_DISPLAY_NAME": "Gameya",
-    "APP_FRAMEWORK": "sveltekit-edge-bff",
+    "APP_FRAMEWORK": "cljs-reagent-re-frame-jp-go-dds",
     "APP_NANOID": "g4m3ya00",
     "APP_PERFORMER_TYPE": "game",
     "APP_UI_TYPE": "game",
@@ -27,7 +26,7 @@
     }
   ],
   "assets": {
-    "directory": "./svelte/.svelte-kit/cloudflare/client",
+    "directory": "./cljs/public",
     "binding": "ASSETS",
     "html_handling": "auto-trailing-slash",
     "not_found_handling": "none"

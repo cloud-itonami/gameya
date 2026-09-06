@@ -13,16 +13,43 @@ The name says the subject, not the role. Read it as *the gameya game* — 「ゲ
 `etzhayyim/root` at `60-apps/etzhayyim-project-gameya` (`migration.edn`, source
 revision `d1ff44f494`, 22 files / 179,889 bytes).
 
-## The split — measured 2026-08-13 at tip `0f866b5`
+## The split — measured 2026-08-13 at tip `0f866b5`, appview rebuilt 2026-09-07
 
-`wrangler.jsonc` sets `"main": "svelte/.svelte-kit/cloudflare/_worker.js"`. That
-is a SvelteKit build, and `svelte/src/routes/+page.svelte` is a **generated
-appview placeholder** — a dark self-description card that prints
-`routeCount: 0`. The game is not in it and is not reachable through it.
+`wrangler.jsonc` used to set `"main": "svelte/.svelte-kit/cloudflare/_worker.js"`
+— a SvelteKit build, with `svelte/src/routes/+page.svelte` as a **generated
+appview placeholder**, a dark self-description card that printed
+`routeCount: 0`. The game was never in it and was never reachable through it.
 
-Both were built and served locally. The difference is not an inference:
+**2026-09-07: the SvelteKit scaffold was migrated to cljs (reagent + re-frame +
+jp-go-dds), per ADR-2608260900 (repo-wide "Svelte/React are not authored in
+this workspace; the default is cljs + reagent + re-frame + jp-go-dds").** The
+`+page.svelte` self-description card was ported faithfully — same fields
+(title/project/name/kind/routeCount/routes/vars/xrpc), same four sections — to
+`appview/gameya-play-canvas/cljs/src/gameya/app.cljs`. **This did not close the
+split.** The game is still not part of the deployable; only the placeholder's
+implementation language changed. `wrangler.jsonc` no longer has a `main` key at
+all (deleted, not repointed at `src/app.ts` — see "Known gaps" below for why)
+and `assets.directory` now points at `./cljs/public`, the shadow-cljs build
+output of the new scaffold.
 
-| `wrangler dev` (the repo's own config) | `wrangler dev src/app.ts` (the game) |
+The SvelteKit BFF's one backend route, `svelte/src/routes/xrpc/[...path]/+server.ts`
+(POST `/xrpc/…` → `mcp.etzhayyim.com`), was **not** deleted with the rest of
+`svelte/` — it was backend logic, not frontend markup. It now lives, byte-for-byte
+unmodified body, at `appview/gameya-play-canvas/src/xrpc-proxy.ts`, marked
+`SVELTEKIT-BACKEND-PRESERVED` and **not wired to anything**: with no `main` key,
+this Worker config has no Worker script left to invoke it. Reviving it (either by
+rewriting it against a real Worker entry, or deciding it should stay retired) is
+an unresolved product decision, not one this migration made.
+
+The table below was measured against the SvelteKit build before it was deleted.
+That build no longer exists, so the left column is no longer reproducible —
+`svelte/` is gone, and step 4 of the operator quickstart has been rewritten for
+the cljs build. No fresh byte-count measurement of the cljs output was taken as
+part of this migration (that would mean running `wrangler dev`, which this
+migration deliberately did not do — see "Known gaps"). Read the left column as
+history, not as the current state of `./cljs/public`:
+
+| `wrangler dev` on the old SvelteKit build (historical, 2026-08-13) | `wrangler dev src/app.ts` (the game) |
 |---|---|
 | `/` → 200, **2,277 bytes** | `/` → 200, **15,700 bytes** |
 | `<title>gameya-play-canvas</title>` | `<title>Gameya - Sky Bento Dash</title>` |
@@ -31,23 +58,26 @@ Both were built and served locally. The difference is not an inference:
 | `/xrpc/…` → POST-only proxy to `mcp.etzhayyim.com` | `/xrpc/…` → 200, LangGraph run payload |
 
 So `progress.md`'s "Deployed `gameya.etzhayyim.com/*` … Worker
-`kotodama-g4m3ya00`" describes a Worker built from a *different* main than the
-one this config now names. Whatever is deployed, this tree cannot rebuild it.
+`kotodama-g4m3ya00`" describes a Worker built from a main that this config no
+longer has at all. Whatever is deployed, this tree cannot rebuild it — it never
+could, and removing the `main` key did not change that.
 
-Reproduce both columns: [`docs/operator-quickstart.md`](docs/operator-quickstart.md),
-steps 3 and 4.
+Reproduce the right column: [`docs/operator-quickstart.md`](docs/operator-quickstart.md),
+step 3. Step 4 now builds the cljs scaffold instead of the SvelteKit one.
 
-## Status: not live — measured 2026-08-13
+## Status: not live — measured 2026-09-07 (re-measured after the cljs migration)
 
 **Three of the four hosts this repo declares do not resolve**, including the one
-the game calls its own identity (`did:web:gameya.etzhayyim.com`):
+the game calls its own identity (`did:web:gameya.etzhayyim.com`). Same three as
+the 2026-08-13 measurement — the migration changed the scaffold's implementation
+language, not its DNS:
 
 | host | declared in | resolves? |
 |---|---|---|
 | `etzhayyim.com` | zone for both routes | **yes** |
 | `gameya.etzhayyim.com` | `wrangler.jsonc`, `PROJECT.jsonld`, `src/app.ts`, `output/gameya-quality/summary.json` | **NXDOMAIN** |
 | `g4m3ya00.etzhayyim.com` | `wrangler.jsonc` route | **NXDOMAIN** |
-| `mcp.etzhayyim.com` | `AGENTGATEWAY_MCP_ROUTER_URL` — the SvelteKit BFF's only upstream | **NXDOMAIN** |
+| `mcp.etzhayyim.com` | `wrangler.jsonc`'s `AGENTGATEWAY_MCP_ROUTER_URL` var (now unread — no `main` script consumes it) and the preserved-but-unwired `src/xrpc-proxy.ts` | **NXDOMAIN** |
 
 The parent zone resolves and a control lookup against an unrelated host
 succeeded, so these are genuine absences, not a local DNS fault.
@@ -69,16 +99,31 @@ copying, not by diverging.
 
 ## What is verified working
 
-Every command in [`docs/operator-quickstart.md`](docs/operator-quickstart.md)
-was executed against this tip on 2026-08-13 and the output there is the output
-observed. In short: `npm ci` → `npm run typecheck` (exit 0) → `npm test`
-(1 passed) → the game serves locally and plays.
+Steps 1–3 of [`docs/operator-quickstart.md`](docs/operator-quickstart.md) (the
+`src/app.ts` game, unaffected by the cljs migration) were executed against tip
+`0f866b5` on 2026-08-13 and the output there is the output observed: `npm ci` →
+`npm run typecheck` (exit 0) → `npm test` (1 passed) → the game serves locally
+and plays.
+
+Step 4 (the appview scaffold) was rewritten 2026-09-07 for the cljs migration
+and re-verified then: `npm install` in `cljs/`, `shadow-cljs compile app` (0
+warnings), `shadow-cljs compile test && node out/tests.js` (5 tests / 14
+assertions, 0 failures, 0 errors). **`wrangler dev`/`wrangler deploy` against
+the new `assets.directory` were not run** — this migration deliberately did not
+start a local Cloudflare dev server or deploy; see "Known gaps" and the
+wrangler.jsonc change note in this repo's history for why.
 
 ## Known gaps
 
-1. **The deployable does not contain the game** (the table above). Either point
-   `main` at `src/app.ts` and drop the SvelteKit scaffold, or move the game into
-   the SvelteKit app. Nothing in the repo picks.
+1. **The deployable does not contain the game** (the table above). This was
+   true of the SvelteKit scaffold and remains true of the cljs scaffold that
+   replaced it 2026-09-07 — the migration ported the placeholder faithfully,
+   it did not decide the split. Either point `main` at `src/app.ts` and drop
+   the appview scaffold, or move the game into the scaffold. Nothing in the
+   repo picks. (`main` was removed outright during the migration rather than
+   repointed at `src/app.ts`, because `src/app.ts` does not call
+   `env.ASSETS.fetch()` — repointing it without that would have made the
+   Worker shadow every static asset the appview serves.)
 
 2. **The test suite is one assertion, `expect(true).toBe(true)`.** It would
    still pass with `src/app.ts` deleted. The 17,628-byte game — collision, stage
@@ -123,10 +168,11 @@ docs/check-surface.cljs       re-measures the status table above
 docs/operator-quickstart.md   every command, walked
 appview/gameya-play-canvas/
   src/app.ts                  THE GAME — Worker + inline canvas game (17,628 B)
+  src/xrpc-proxy.ts           preserved SvelteKit XRPC→MCP handler, NOT wired (see "The split")
   test/gameya.test.ts         one placeholder assertion (see gap 2)
   scripts/quality-gate.mjs    Playwright playtest gate, broken path (gap 3)
-  wrangler.jsonc              main → svelte build, NOT src/app.ts
-  svelte/                     SvelteKit appview scaffold + XRPC→MCP proxy
+  wrangler.jsonc              assets → cljs/public, no main (NOT src/app.ts either)
+  cljs/                       reagent + re-frame + jp-go-dds appview scaffold (was svelte/, migrated 2026-09-07)
   output/gameya-quality/      stale committed run artifacts (gap 4)
 ```
 
