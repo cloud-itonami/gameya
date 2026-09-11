@@ -41,7 +41,7 @@ APP=appview/gameya-play-canvas
 Run from the repo root:
 
 ```bash
-nbb docs/check-surface.cljk
+kbb --backend sci docs/check-surface.cljk
 ```
 
 Observed 2026-08-13, before the cljs migration — **exit 1, and exit 1 was the
@@ -196,18 +196,18 @@ the shared resource governor** — concurrent agent sessions on this machine mus
 not run two heavy builds at once:
 
 ```bash
-node /path/to/com-junkawasaki/scripts/resource-guard.mjs run build -- npx shadow-cljs compile app
+node /path/to/com-junkawasaki/scripts/resource-guard.mjs run build -- amu compile --target wasm32-browser app
 ```
 
 Standalone clones outside that superproject have no such script; use
-`npx shadow-cljs compile app` directly.
+`amu compile --target wasm32-browser app` directly.
 
 Observed on the 2026-09-07 migration run (after the guard freed up):
 `[:app] Build completed. (111 files, 110 compiled, 0 warnings, 27.61s)`. The
 test build was run the same way and passed:
 
 ```bash
-node /path/to/com-junkawasaki/scripts/resource-guard.mjs run build -- npx shadow-cljs compile test
+node /path/to/com-junkawasaki/scripts/resource-guard.mjs run build -- amu compile --target wasm32-browser test
 node out/tests.js
 # Ran 5 tests containing 14 assertions.
 # 0 failures, 0 errors.
