@@ -41,7 +41,7 @@ APP=appview/gameya-play-canvas
 Run from the repo root:
 
 ```bash
-nbb docs/check-surface.cljs
+nbb docs/check-surface.cljk
 ```
 
 Observed 2026-08-13, before the cljs migration — **exit 1, and exit 1 was the

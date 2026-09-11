@@ -56,7 +56,7 @@
           "APP_DISPLAY_NAME" "APP_FRAMEWORK" "APP_NANOID" "APP_PERFORMER_TYPE"
           "APP_UI_TYPE"]
    :xrpc? true
-   :relative-path "appview/gameya-play-canvas/cljs/src/gameya/app.cljs"})
+   :relative-path "appview/gameya-play-canvas/cljs/src/gameya/app.cljk"})
 
 (rf/reg-event-db
  :initialize-db

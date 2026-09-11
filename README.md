@@ -25,7 +25,7 @@ jp-go-dds), per ADR-2608260900 (repo-wide "Svelte/React are not authored in
 this workspace; the default is cljs + reagent + re-frame + jp-go-dds").** The
 `+page.svelte` self-description card was ported faithfully — same fields
 (title/project/name/kind/routeCount/routes/vars/xrpc), same four sections — to
-`appview/gameya-play-canvas/cljs/src/gameya/app.cljs`. **This did not close the
+`appview/gameya-play-canvas/cljs/src/gameya/app.cljk`. **This did not close the
 split.** The game is still not part of the deployable; only the placeholder's
 implementation language changed. `wrangler.jsonc` no longer has a `main` key at
 all (deleted, not repointed at `src/app.ts` — see "Known gaps" below for why)
@@ -85,7 +85,7 @@ succeeded, so these are genuine absences, not a local DNS fault.
 **Re-measure before trusting this table** — it is dated, and dated tables rot:
 
 ```bash
-nbb docs/check-surface.cljs      # exit 1 today; exit 0 would mean this table is stale
+nbb docs/check-surface.cljk      # exit 1 today; exit 0 would mean this table is stale
 ```
 
 The script has three exit codes so that *could not measure* is never reachable
@@ -164,7 +164,7 @@ PROJECT.jsonld                schema.org VideoGame record
 migration.edn                 provenance of the extraction from etzhayyim/root
 NOTICE                        Apache-2.0 + etzhayyim Charter Rider v3.1
 progress.md                   pre-extraction build log (see gap 5)
-docs/check-surface.cljs       re-measures the status table above
+docs/check-surface.cljk       re-measures the status table above
 docs/operator-quickstart.md   every command, walked
 appview/gameya-play-canvas/
   src/app.ts                  THE GAME — Worker + inline canvas game (17,628 B)
