@@ -85,7 +85,7 @@ succeeded, so these are genuine absences, not a local DNS fault.
 **Re-measure before trusting this table** — it is dated, and dated tables rot:
 
 ```bash
-nbb docs/check-surface.cljk      # exit 1 today; exit 0 would mean this table is stale
+kbb --backend sci docs/check-surface.cljk      # exit 1 today; exit 0 would mean this table is stale
 ```
 
 The script has three exit codes so that *could not measure* is never reachable
@@ -106,8 +106,8 @@ Steps 1–3 of [`docs/operator-quickstart.md`](docs/operator-quickstart.md) (the
 and plays.
 
 Step 4 (the appview scaffold) was rewritten 2026-09-07 for the cljs migration
-and re-verified then: `npm install` in `cljs/`, `shadow-cljs compile app` (0
-warnings), `shadow-cljs compile test && node out/tests.js` (5 tests / 14
+and re-verified then: `npm install` in `cljs/`, `amu compile --target wasm32-browser app` (0
+warnings), `amu compile --target wasm32-browser test && node out/tests.js` (5 tests / 14
 assertions, 0 failures, 0 errors). **`wrangler dev`/`wrangler deploy` against
 the new `assets.directory` were not run** — this migration deliberately did not
 start a local Cloudflare dev server or deploy; see "Known gaps" and the
